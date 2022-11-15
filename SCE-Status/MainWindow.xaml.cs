@@ -78,17 +78,21 @@ namespace SCE_Status
             }
             // C:\ProgramData\Salad\logs
             var directory = new DirectoryInfo(@"C:\ProgramData\Salad\logs");
-            var logFile = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).First();
-            string[] lines = File.ReadAllLines(logFile.FullName);
-            foreach (string line in lines)
+            using (var stream = new FileStream(directory.GetFiles().OrderByDescending(f => f.LastWriteTime).First().FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                if (line.Contains("ProvidedWorkload"))
+                using (var reader = new StreamReader(stream, Encoding.UTF8))
                 {
-                    workloadLabel.Content = "Most Recent Workload:    " + line.Split(") - ")[1];
-                    runningSinceLabel.Content = "Running Since:    " + line.Split("[INF]")[0];
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        if (line.Contains("ProvidedWorkload"))
+                        {
+                            workloadLabel.Content = "Most Recent Workload:    " + line.Split(") - ")[1];
+                            runningSinceLabel.Content = "Running Since:    " + line.Split("[INF]")[0];
+                        }
+                    }
                 }
             }
-
         }
 
     }

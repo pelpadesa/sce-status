@@ -19,3 +19,5 @@ C:\Users\ggg\source\repos\SCE-Status-git2\SCE-Status\obj\Debug\net6.0-windows\SC
 C:\Users\ggg\source\repos\SCE-Status-git2\SCE-Status\obj\Debug\net6.0-windows\refint\SCE-Status.dll
 C:\Users\ggg\source\repos\SCE-Status-git2\SCE-Status\obj\Debug\net6.0-windows\SCE-Status.genruntimeconfig.cache
 C:\Users\ggg\source\repos\SCE-Status-git2\SCE-Status\obj\Debug\net6.0-windows\ref\SCE-Status.dll
+C:\Users\ggg\source\repos\SCE-Status-git2\SCE-Status\bin\Debug\net6.0-windows\SCE-Status.pdb
+C:\Users\ggg\source\repos\SCE-Status-git2\SCE-Status\obj\Debug\net6.0-windows\SCE-Status.pdb
