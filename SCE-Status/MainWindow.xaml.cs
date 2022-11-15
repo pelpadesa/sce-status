@@ -37,16 +37,15 @@ namespace SCE_Status
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 FileName = "cmd.exe",
-                Arguments = "/C wsl --list --verbose"
+                Arguments = "/C wsl --list --verbose > output.txt"
             };
             process.Start();
-            string result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
-
-            string[] results = result.Split("\n");
+            string result = File.ReadAllText("output.txt");
+            string[] results = File.ReadAllLines("output.txt");
 
             richTextBox1.Document.Blocks.Clear();
-            richTextBox1.Document.Blocks.Add(new Paragraph(new Run(result.Replace("\n", ""))));
+            richTextBox1.Document.Blocks.Add(new Paragraph(new Run(result.Replace(Environment.NewLine, ""))));
             bool set = false;
             foreach (string distro in results)
             {
@@ -70,11 +69,12 @@ namespace SCE_Status
                         statusLabel.Content = "Container Status: Running";
                     }
                     set = true;
+                    break;
                 }
-                if (!set)
-                {
-                    statusLabel.Content = "Container Status: Not Installed!";
-                }
+            }
+            if (!set)
+            {
+                statusLabel.Content = "Container Status: Not Installed!";
             }
             // C:\ProgramData\Salad\logs
             var directory = new DirectoryInfo(@"C:\ProgramData\Salad\logs");
