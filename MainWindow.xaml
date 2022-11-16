@@ -5,17 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCE_Status"
         mc:Ignorable="d"
-        Title="Salad Container Status Checker" Height="285" Width="578" ResizeMode="CanMinimize">
+        Title="Salad Container Status Checker" Height="600" Width="578" ResizeMode="CanMinimize">
     <Grid Background="#FF0A2133" Margin="0,0,0,-6">
         <Label x:Name="statusLabel" Content="Container Status: Unchecked" Margin="10,9,269,0" VerticalAlignment="Top" Foreground="White" FontFamily="Bahnschrift Light" FontSize="14"/>
         <Button Content="Check Status" HorizontalAlignment="Left" Margin="375,13,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.689,0.498" Width="169" Click="Button_Click" Background="#FFB2D530" BorderBrush="#00707070" FontSize="14"/>
         <RichTextBox x:Name="richTextBox1" HorizontalAlignment="Left" Height="96" Margin="10,41,0,0" VerticalAlignment="Top" Width="534" IsDocumentEnabled="True" FontFamily="Courier New" FontSize="16" Background="#FF20394C" Foreground="White" IsReadOnly="True">
             <FlowDocument>
                 <Paragraph>
-                    <Run Text="Salad Container Status Checker v1.0.0
-                         Made by Pepesalad#5150
-                         
-                         Idea Stolen from Cyph#0111
+                    <Run Text="Salad Container Status Checker v1.0.2
+                         + 'Report An Issue' Button 
+                          + 'Copy Logs' Button
+                                 + 'Show Warnings' Button
                          " FontSize="16"/>
                 </Paragraph>
             </FlowDocument>
@@ -28,11 +28,21 @@
         <RichTextBox x:Name="workloadLogs" HorizontalAlignment="Left" Height="207" Margin="10,341,0,0" VerticalAlignment="Top" Width="534" IsDocumentEnabled="True" FontFamily="Courier New" FontSize="16" Background="#FF20394C" Foreground="White" IsReadOnly="True" TextChanged="richTextBox1_Copy_TextChanged">
             <FlowDocument>
                 <Paragraph>
-                    <Run Text="Your Workload-related logs will be shown here." FontSize="16"/>
+                    <Run Text="Your Workload-related logs will be shown here.                                        " FontSize="16"/>
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <Label Content="Workload Logs" HorizontalAlignment="Left" Margin="10,307,0,0" VerticalAlignment="Top" Width="250" Background="Transparent" Foreground="White" FontSize="14"/>
+        <Label Content="Salad Workload Logs" HorizontalAlignment="Left" Margin="10,307,0,0" VerticalAlignment="Top" Width="250" Background="Transparent" Foreground="White" FontSize="14" FontFamily="Bahnschrift Light"/>
+        <Button Content="Report an Issue" HorizontalAlignment="Left" Margin="22,213,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.689,0.498" Width="170" Click="issuesButton" Background="#FFB2D530" BorderBrush="#00707070" FontSize="14"/>
+        <CheckBox x:Name="showWarnings" Content="Show Warnings" HorizontalAlignment="Left" Margin="207,275,0,0" VerticalAlignment="Top" Height="23" Foreground="White" FontSize="14" Width="125"/>
+        <Button Content="Copy Logs" HorizontalAlignment="Left" Margin="375,272,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.689,0.498" Width="170" Click="copyLogsButton" Background="#FFB2D530" BorderBrush="#00707070" FontSize="14"/>
+        <RichTextBox x:Name="logBuffer" HorizontalAlignment="Left" Height="207" Margin="10,341,0,0" VerticalAlignment="Top" Width="534" IsDocumentEnabled="True" FontFamily="Courier New" FontSize="16" Background="#FF20394C" Foreground="White" IsReadOnly="True" TextChanged="richTextBox1_Copy_TextChanged" Visibility="Hidden">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text="Your Workload-related logs will be shown here.                                        " FontSize="16"/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
 
     </Grid>
 </Window>

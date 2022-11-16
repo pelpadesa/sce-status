@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,10 @@ namespace SCE_Status
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            CheckStatus();
+            var ts = new ThreadStart(CheckStatus);
+            var statusThread = new Thread(ts);
+            statusThread.IsBackground = true;
+            statusThread.Start();
         }
 
         private void advancedSettingsButton_Click(object sender, RoutedEventArgs e)
@@ -94,7 +98,6 @@ namespace SCE_Status
                 richTextBox1.Document.Blocks.Clear();
                 richTextBox1.Document.Blocks.Add(new Paragraph(new Run(result.Replace(Environment.NewLine, ""))));
             }));
-            bool set = false;
             string status = "Container Status: Not Installed!";
             foreach (string distro in results)
             {
@@ -117,7 +120,6 @@ namespace SCE_Status
                     {
                         status = "Container Status: Running";
                     }
-                    set = true;
                     break;
                 }
             }
@@ -132,7 +134,10 @@ namespace SCE_Status
                 using (var reader = new StreamReader(stream, Encoding.UTF8))
                 {
                     string line;
-                    string logs = "";
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        logBuffer.Document.Blocks.Clear();
+                    }));
                     while ((line = reader.ReadLine()) != null)
                     {
                         if (line.Contains("ProvidedWorkload"))
@@ -141,13 +146,44 @@ namespace SCE_Status
                             {
                                 workloadLabel.Content = "Most Recent Workload:    " + line.Split(") - ")[1];
                                 runningSinceLabel.Content = "Running Since:    " + line.Split("[INF]")[0];
-                                logs = logs + line.Split("[INF]")[0] + line.Split(") - ")[1].Split(" - ")[0] + "\n";
                             }));
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                TextRange rangeOfLine = new TextRange(logBuffer.Document.ContentEnd, logBuffer.Document.ContentEnd);
+                                rangeOfLine.Text = line.Split("[INF]")[0] + line.Split(") - ")[1].Split(" - ")[0] + "\n";
+                                rangeOfLine.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.GreenYellow);
+                            }));
+                        }
+                        else if (line.Contains("[WRN]"))
+                        {
+                            //logs = logs + line + "\n";
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                if (showWarnings.IsChecked == true)
+                                {
+                                    TextRange rangeOfLine = new TextRange(logBuffer.Document.ContentEnd, logBuffer.Document.ContentEnd);
+                                    rangeOfLine.Text = line + "\n";
+                                    rangeOfLine.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Orange);
+                                }
+                            }));
+
                         }
                     }
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        workloadLogs.Document.Blocks.Add(new Paragraph(new Run(logs)));
+                        TextRange textRange = new TextRange(logBuffer.Document.ContentStart, logBuffer.Document.ContentEnd);
+                        MemoryStream ms = new MemoryStream();
+                        textRange.Save(ms, DataFormats.Rtf);
+                        
+
+                        FlowDocument fd = new FlowDocument();
+                        MemoryStream ms2 = new MemoryStream(Encoding.ASCII.GetBytes(Encoding.Default.GetString(ms.ToArray())));
+                        TextRange textRange2 = new TextRange(fd.ContentStart, fd.ContentEnd);
+                        textRange2.Load(ms2, DataFormats.Rtf);
+
+
+                        workloadLogs.Document.Blocks.Clear();
+                        workloadLogs.Document = fd;
                         workloadLogs.ScrollToEnd();
                     }));
                 }
@@ -169,6 +205,25 @@ namespace SCE_Status
         private void richTextBox1_Copy_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void issuesButton(object sender, RoutedEventArgs e)
+        {
+            var destinationurl = "https://github.com/pelpadesa/sce-status/issues/";
+            var sInfo = new ProcessStartInfo(destinationurl)
+            {
+                UseShellExecute = true,
+            };
+            Process.Start(sInfo);
+        }
+
+        private void copyLogsButton(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                TextRange textRange = new TextRange(workloadLogs.Document.ContentStart, workloadLogs.Document.ContentEnd);
+                Clipboard.SetText(textRange.Text);
+            }));
         }
     }
 }
